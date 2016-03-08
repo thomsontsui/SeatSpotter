@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.seatspotter.seatspotter.ActivityLibraryMap">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Seat Spotter"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/libraryFloor"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapLegend"
+        android:layout_below="@+id/libraryFloor"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <com.seatspotter.seatspotter.ViewMap
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/canvasMap"
+        android:layout_below="@+id/mapLegend" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find 2 Seats"
+        android:id="@+id/twoSeatButton"
+        android:layout_alignParentBottom="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find 3 Seats"
+        android:id="@+id/threeSeatButton"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/twoSeatButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find 4 Seats"
+        android:id="@+id/fourSeatButton"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/threeSeatButton"
+        android:onClick="onFourSeatButtonClick"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find 5 Seats"
+        android:id="@+id/fiveSeatButton"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/fourSeatButton"/>
+
+</RelativeLayout>
