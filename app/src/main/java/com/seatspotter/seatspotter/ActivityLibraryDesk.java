@@ -1,6 +1,7 @@
 package com.seatspotter.seatspotter;
 
 
+import android.app.Activity;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,10 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class ActivityLibraryDesk extends ActionBarActivity {
-
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +25,10 @@ public class ActivityLibraryDesk extends ActionBarActivity {
         //Legend image
         ImageView deskLegend = (ImageView)findViewById(R.id.deskLegend);
         deskLegend.setImageResource(R.drawable.desklegend2);
+
+        //Timer
+        Timer timer = new Timer();
+        timer.schedule(timerTask, 0, 5000);
     }
 
     public void onPollButtonClick(View view){
@@ -51,4 +57,19 @@ public class ActivityLibraryDesk extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            // When you need to modify a UI element, do so on the UI thread.
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //Update desk status
+                    ViewDesk deskBlockView = (ViewDesk) findViewById(R.id.canvasDesk);
+                    deskBlockView.updateDeskStatus();
+                }
+            });
+        }
+    };
 }

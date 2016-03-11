@@ -1,24 +1,39 @@
 package com.seatspotter.seatspotter;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 import android.content.Intent;
 import android.widget.TextView;
-import android.widget.Toast;    //Will remove later
+import android.widget.Toast;
 import com.loopj.android.http.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ActivityLibraryList extends ActionBarActivity {
 
     public final static String LIBRARY_NAME = "com.seatspotter.seatspotter.LIBRARYNAME";
 
-    AsyncHttpClient client = new AsyncHttpClient();
+    List<String> groupList;
+    List<String> childList;
+    Map<String, List<String>> libraryCollection;
+    ExpandableListView expLibraryList;
+    String responseResult = "";
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,65 +41,61 @@ public class ActivityLibraryList extends ActionBarActivity {
         setTitle("Library List");
         setContentView(R.layout.activity_library_list);
 
-        final ListView libraryList = (ListView) findViewById(R.id.libraryList);
+        //Progress Dialog
+        pd= new ProgressDialog(this);
+        pd.setTitle("Loading list of libraries");
+        pd.setMessage("Please wait while loading...");
+        pd.setCancelable(false);
+        pd.show();
 
-        //Static Data before database is created
-        Desk designFairDemoFloor1Desk1 = new Desk(0, 0,  0, 0);
-        Desk designFairDemoFloor1Desk2 = new Desk(1, 0,  0, 1);
-        Desk[] designFairDemoFloor1Desks = new Desk[]{designFairDemoFloor1Desk1, designFairDemoFloor1Desk2};
+        //Timer
+        Timer timer = new Timer();
+        timer.schedule(timerTask, 0, 10000);
 
-        Desk designFairDemoFloor2Desk1 = new Desk(0, 0, 0, 0);
-        Desk designFairDemoFloor2Desk2 = new Desk(1, 0, 1, 0);
-        Desk[] designFairDemoFloor2Desks = new Desk[]{designFairDemoFloor2Desk1, designFairDemoFloor2Desk2};
+        updateLibraryStatus();
+    }
 
-        Floor designFairDemoFloor1 = new Floor("Floor Plan A", 1, designFairDemoFloor1Desks);
-        Floor designFairDemoFloor2 = new Floor("Floor Plan B", 2, designFairDemoFloor2Desks);
-        Floor[] designFairDemoFloors = new Floor[]{designFairDemoFloor1, designFairDemoFloor2};
+    private void createGroupList(List<Library> libraries) {
+        groupList = new ArrayList<String>();
 
-        Library designFairDemo = new Library("Design Fair Demo", designFairDemoFloors);
+        if (libraries.isEmpty()){
+            groupList.add("No Libraries were found");
+        } else {
+            for (Library lib : libraries) {
+                groupList.add(lib.name);
+            }
+            pd.dismiss();
+        }
+    }
 
-        Desk dcFloor1Desk1 = new Desk(0, 0, 0, 0);
-        Desk dcFloor1Desk2 = new Desk(1, 0, 0, 1);
-        Desk[] dcFloor1Desks = new Desk[]{dcFloor1Desk1, dcFloor1Desk2};
+    private void createCollection(List<Library> libraries) {
+        if (libraries.isEmpty()){
+            childList = new ArrayList<String>();
+            childList.add("No additional information");
+            libraryCollection = new LinkedHashMap<String, List<String>>();
+            libraryCollection.put(groupList.get(0), childList);
+        } else {
+            // preparing library collection(child)
+            for (Library lib : libraries) {
+                String[] libInfo = {"Total Desks: " + String.valueOf(lib.totalDesks), "Empty Desks: " + String.valueOf(lib.emptyDesks),
+                        "Unknown State: " + String.valueOf(lib.unknownState)};
 
-        Desk dcFloor2Desk1 = new Desk(0, 0, 0, 0);
-        Desk dcFloor2Desk2 = new Desk(1, 0, 1, 0);
-        Desk[] dcFloor2Desks = new Desk[]{dcFloor2Desk1, dcFloor2Desk2};
+                libraryCollection = new LinkedHashMap<String, List<String>>();
 
-        Floor dcFloor1 = new Floor("Floor Plan A", 1, dcFloor1Desks);
-        Floor dcFloor2 = new Floor("Floor Plan B", 2, dcFloor2Desks);
-        Floor[] dcFloors = new Floor[]{dcFloor1, dcFloor2};
-
-        Library dc = new Library("DC Library", dcFloors);
-
-        //Static string arrays
-        String[] values = new String[] {designFairDemo.name, dc.name, "DP Library"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, values);
-
-        libraryList.setAdapter(adapter);
-
-        libraryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == 0) {
-                    Intent intent = new Intent(ActivityLibraryList.this, ActivityLibraryFloor.class);
-
-                    String libraryName = ((TextView)view).getText().toString();
-                    intent.putExtra(LIBRARY_NAME, libraryName);
-
-                    startActivity(intent);
-                }
-                else {
-                    //Will remove later
-                    String item = ((TextView)view).getText().toString();
-
-                    Toast.makeText(getBaseContext(), item, Toast.LENGTH_LONG).show();
+                for (String library : groupList) {
+                    if (library.equals(lib.name)) {
+                        loadChild(libInfo);
+                    }
+                    libraryCollection.put(library, childList);
                 }
             }
-        });
+        }
+    }
+
+    private void loadChild(String[] libraryInfo) {
+        childList = new ArrayList<String>();
+        for (String info : libraryInfo)
+            childList.add(info);
     }
 
     @Override
@@ -108,5 +119,102 @@ public class ActivityLibraryList extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void updateLibraryStatus() {
+        //Call RestAPI
+        String urlString = "http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries";
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(urlString, new AsyncHttpResponseHandler() {
+            // When the response returned by REST has Http response code '200'
+            @Override
+            public void onSuccess(String response) {
+                responseResult = response;
+                System.out.println("String: " + response);
+            }
+        });
+
+        List <Library> libraries = new ArrayList<Library>();
+
+        if (responseResult != ""){
+            try {
+                //Get the instance of JSONArray that contains JSONObjects
+                JSONArray jsonArray = new JSONArray(responseResult);
+
+                //Iterate the jsonArray and print the info of JSONObjects
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    int id = Integer.parseInt(jsonObject.optString("libraryId").toString());
+                    String name = jsonObject.optString("libraryName").toString();
+                    int totalDesks = Integer.parseInt(jsonObject.optString("totalDesks").toString());
+                    int emptyDesks = Integer.parseInt(jsonObject.optString("emptyDesks").toString());
+                    int unknownState = Integer.parseInt(jsonObject.optString("unknownState").toString());
+
+//                    System.out.println("id: " + String.valueOf(id));
+//                    System.out.println("name: " + name);
+//                    System.out.println("totalDesks: " + String.valueOf(totalDesks));
+//                    System.out.println("emptyDesks: " + String.valueOf(emptyDesks));
+//                    System.out.println("unknownState: " + String.valueOf(unknownState));
+
+                    Library lib = new Library(id, name, totalDesks, emptyDesks, unknownState);
+                    libraries.add(lib);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        createGroupList(libraries);
+        createCollection(libraries);
+
+
+        expLibraryList = (ExpandableListView) findViewById(R.id.libraryList);
+
+        final MyLibraryListAdapter expListAdapter = new MyLibraryListAdapter(
+                this, groupList, libraryCollection){
+            @Override
+            public void OnIndicatorClick(boolean isExpanded, int position) {
+                if(isExpanded){
+                    expLibraryList.collapseGroup(position);
+                }else{
+                    expLibraryList.expandGroup(position);
+                }
+            }
+        };
+        expLibraryList.setAdapter(expListAdapter);
+
+        expLibraryList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (groupList.get(groupPosition).toString().contains("Demo Library")) {
+                    Intent intent = new Intent(ActivityLibraryList.this, ActivityLibraryFloor.class);
+
+                    String libraryName = ((TextView) v.findViewById(R.id.heading)).getText().toString();
+                    intent.putExtra(LIBRARY_NAME, libraryName);
+
+                    startActivity(intent);
+                } else {
+                    String item = ((TextView) v.findViewById(R.id.heading)).getText().toString();
+
+                    Toast.makeText(getBaseContext(), groupList.get(groupPosition).toString(), Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+        });
+    }
+
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            // When you need to modify a UI element, do so on the UI thread.
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //Update desk status
+                    updateLibraryStatus();
+                }
+            });
+        }
+    };
 }
 

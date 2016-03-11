@@ -5,8 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class ViewDesk extends View {
 
@@ -17,6 +21,7 @@ public class ViewDesk extends View {
     private int[] xPosition;
     private int[] yPosition;
     private int[] status;
+    private String stringResult;
 
     public ViewDesk(Context context) {
         super(context);
@@ -42,7 +47,7 @@ public class ViewDesk extends View {
         canvas.drawLine(canvas.getWidth() / 10, canvas.getHeight() / 4, canvas.getWidth() * 9 / 10, canvas.getHeight() / 4, paint);
 
         //if (onFirstDraw) {
-        statusPaint.setColor(Color.RED);
+        statusPaint.setColor(Color.GREEN);
            // onFirstDraw = false;
 
         //Need to circles one for outline, one for fill
@@ -84,33 +89,88 @@ public class ViewDesk extends View {
                 }
             }
         }
-
     }
 
     public void updateDeskStatus(){
-        //Static Data before database is created
-        Desk designFairDemoFloor1Desk1 = new Desk(0, 0, 227, 131);
-        Desk designFairDemoFloor1Desk2 = new Desk(1, 0, 530, 131);
-        Desk designFairDemoFloor1Desk3 = new Desk(0, 0, 227, 394);
-        Desk designFairDemoFloor1Desk4 = new Desk(1, 0, 530, 394);
+        //Call RestAPI
+        String urlString = "http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries";
+        //new CallAPI().execute(urlString);
 
-        Desk[] desks = new Desk[] {designFairDemoFloor1Desk1, designFairDemoFloor1Desk2, designFairDemoFloor1Desk3, designFairDemoFloor1Desk4};
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get("http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries", new AsyncHttpResponseHandler() {
+            // When the response returned by REST has Http response code '200'
+            @Override
+            public void onSuccess(String response) {
+                System.out.println("String: " + response);
+            }
+        });
 
-        designFairDemoFloor1Desk1.setStatus(0);
-        designFairDemoFloor1Desk2.setStatus(1);
-        designFairDemoFloor1Desk3.setStatus(2);
-        designFairDemoFloor1Desk4.setStatus(1);
-
-        xPosition = new int[desks.length];
-        yPosition = new int[desks.length];
-        status = new int[desks.length];
-
-        for (int i = 0; i < desks.length; i++) {
-            xPosition[i] = desks[i].getX();
-            yPosition[i] = desks[i].getY();
-            status[i] = desks[i].getStatus();
-        }
+//        //Static Data before database is created
+//        Desk designFairDemoFloor1Desk1 = new Desk(0, 0, 227, 131);
+//        Desk designFairDemoFloor1Desk2 = new Desk(1, 0, 530, 131);
+//        Desk designFairDemoFloor1Desk3 = new Desk(0, 0, 227, 394);
+//        Desk designFairDemoFloor1Desk4 = new Desk(1, 0, 530, 394);
+//
+//        Desk[] desks = new Desk[] {designFairDemoFloor1Desk1, designFairDemoFloor1Desk2, designFairDemoFloor1Desk3, designFairDemoFloor1Desk4};
+//
+//        designFairDemoFloor1Desk1.setStatus(0);
+//        designFairDemoFloor1Desk2.setStatus(1);
+//        designFairDemoFloor1Desk3.setStatus(2);
+//        designFairDemoFloor1Desk4.setStatus(1);
+//
+//        xPosition = new int[desks.length];
+//        yPosition = new int[desks.length];
+//        status = new int[desks.length];
+//
+//        for (int i = 0; i < desks.length; i++) {
+//            xPosition[i] = desks[i].getX();
+//            yPosition[i] = desks[i].getY();
+//            status[i] = desks[i].getStatus();
+//        }
 
         invalidate();
     }
+
+
+//    public class CallAPI extends AsyncTask<String, String, String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String urlString = params[0];
+//            String resultToDisplay = "";
+//
+//            AsyncHttpClient client = new AsyncHttpClient();
+//            client.get("http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries", new AsyncHttpResponseHandler() {
+//                // When the response returned by REST has Http response code '200'
+//                @Override
+//                public void onSuccess(String response) {
+//                    System.out.println("String: " + response);
+//                }
+//            });
+//
+////            InputStream in = null;
+////
+////            // HTTP Get
+////            try {
+////
+////                URL url = new URL(urlString);
+////
+////                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+////
+////                in = new BufferedInputStream(urlConnection.getInputStream());
+////                stringResult = in.toString();
+////
+////            } catch (Exception e ) {
+////
+////                System.out.println(e.getMessage());
+////
+////                return e.getMessage();
+////
+////            }
+//            return resultToDisplay;
+//        }
+////
+////        protected void onPostExecute(String result) {
+////
+////        }
+//    }
 }

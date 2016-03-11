@@ -6,9 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class ViewMap extends View{
     private Rect rectangle;
@@ -118,6 +124,37 @@ public class ViewMap extends View{
         return true;
     }
 
+//    public void updateDeskStatus(){
+//        //Call RestAPI
+//        String urlString = "";
+//        new CallAPI().execute(urlString);
+//
+//        //Static Data before database is created
+//        Desk designFairDemoFloor1Desk1 = new Desk(0, 0, 227, 131);
+//        Desk designFairDemoFloor1Desk2 = new Desk(1, 0, 530, 131);
+//        Desk designFairDemoFloor1Desk3 = new Desk(0, 0, 227, 394);
+//        Desk designFairDemoFloor1Desk4 = new Desk(1, 0, 530, 394);
+//
+//        Desk[] desks = new Desk[] {designFairDemoFloor1Desk1, designFairDemoFloor1Desk2, designFairDemoFloor1Desk3, designFairDemoFloor1Desk4};
+//
+//        designFairDemoFloor1Desk1.setStatus(0);
+//        designFairDemoFloor1Desk2.setStatus(1);
+//        designFairDemoFloor1Desk3.setStatus(2);
+//        designFairDemoFloor1Desk4.setStatus(1);
+//
+//        xPosition = new int[desks.length];
+//        yPosition = new int[desks.length];
+//        status = new int[desks.length];
+//
+//        for (int i = 0; i < desks.length; i++) {
+//            xPosition[i] = desks[i].getX();
+//            yPosition[i] = desks[i].getY();
+//            status[i] = desks[i].getStatus();
+//        }
+//
+//        invalidate();
+//    }
+
     public void searchFourSeatBlock(){
         //Static Data before database is created
         DeskBlock designFairDemoFloor1DeskBlock1 = new DeskBlock(0, 4, 227, 131);
@@ -138,4 +175,39 @@ public class ViewMap extends View{
 
         invalidate();
     }
+
+//    private class CallAPI extends AsyncTask<String, String, String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String urlString = params[0];
+//
+//            String resultToDisplay = "";
+//
+//            InputStream in = null;
+//
+//            // HTTP Get
+//            try {
+//
+//                URL url = new URL(urlString);
+//
+//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//
+//                in = new BufferedInputStream(urlConnection.getInputStream());
+//
+//            } catch (Exception e ) {
+//
+//                System.out.println(e.getMessage());
+//
+//                return e.getMessage();
+//
+//            }
+//
+//            return resultToDisplay;
+//
+//        }
+//
+//        protected void onPostExecute(String result) {
+//
+//        }
+//    }
 }
