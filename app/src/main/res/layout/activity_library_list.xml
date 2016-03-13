@@ -30,12 +30,6 @@
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true" />
 
-    <!--<ListView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/libraryList"-->
-        <!--android:layout_below="@+id/textDescription"-->
-        <!--android:layout_centerHorizontal="true" />-->
     <ExpandableListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

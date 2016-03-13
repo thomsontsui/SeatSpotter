@@ -3,31 +3,21 @@ package com.seatspotter.seatspotter;
 public class Desk {
 
     int id;
-    int block;
+    int blockID;
+    int deskState;
     int x;
     int y;
-    int status;
+    int xLength;
+    int yLength;
 
-    public Desk(int id, int block, int x, int y)
+    public Desk(int id, int blockID, int deskState, int x, int y, int xLength, int yLength )
     {
         this.id = id;
-        this.block = block;
+        this.blockID = blockID;
+        this.deskState = deskState;
         this.x = x;
         this.y = y;
-        this.status = 0;
+        this.xLength = xLength;
+        this.yLength = yLength;
     }
-
-    public int getStatus(){
-        return this.status;
-    }
-
-    public void setStatus(int status){
-        this.status = status;
-    }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY() { return this. y; }
 }

@@ -13,7 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class ActivityLibraryMap extends ActionBarActivity {
+public class ActivityLibraryMapB extends ActionBarActivity {
 
     int floorID;
     String floorName;
@@ -23,7 +23,7 @@ public class ActivityLibraryMap extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Map View");
-        setContentView(R.layout.activity_library_map);
+        setContentView(R.layout.activity_library_mapb);
 
         Intent intent = getIntent();
 
@@ -34,7 +34,7 @@ public class ActivityLibraryMap extends ActionBarActivity {
         if (intent.getStringExtra(ActivityLibraryFloor.FLOOR_ID) != null){
             floorID = Integer.parseInt(intent.getStringExtra(ActivityLibraryFloor.FLOOR_ID));
         } else {
-            floorID = 3;
+            floorID = 4;
         }
 
         //Legend image
@@ -49,22 +49,22 @@ public class ActivityLibraryMap extends ActionBarActivity {
     }
 
     public void onTwoSeatButtonClick(View view){
-        ViewMap mapView = (ViewMap) findViewById(R.id.canvasMap);
+        ViewMapB mapView = (ViewMapB) findViewById(R.id.canvasMap);
         mapView.searchTwoSeatBlock();
     }
 
     public void onThreeSeatButtonClick(View view){
-        ViewMap mapView = (ViewMap) findViewById(R.id.canvasMap);
+        ViewMapB mapView = (ViewMapB) findViewById(R.id.canvasMap);
         mapView.searchThreeSeatBlock();
     }
 
     public void onFourSeatButtonClick(View view){
-        ViewMap mapView = (ViewMap) findViewById(R.id.canvasMap);
+        ViewMapB mapView = (ViewMapB) findViewById(R.id.canvasMap);
         mapView.searchFourSeatBlock();
     }
 
     public void onFiveSeatButtonClick(View view){
-        ViewMap mapView = (ViewMap) findViewById(R.id.canvasMap);
+        ViewMapB mapView = (ViewMapB) findViewById(R.id.canvasMap);
         mapView.searchFiveSeatBlock();
     }
 
@@ -91,7 +91,7 @@ public class ActivityLibraryMap extends ActionBarActivity {
     }
 
     public void updateMapStatus(){
-        ViewMap mapView = (ViewMap) findViewById(R.id.canvasMap);
+        ViewMapB mapView = (ViewMapB) findViewById(R.id.canvasMap);
         mapView.updateMapStatus(floorID);
     }
 

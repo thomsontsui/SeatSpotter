@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewMap extends View{
+public class ViewMapB extends View{
 
     public final static String DESK_HUB_ID = "com.seatspotter.seatspotter.DESKHUBID";
 
@@ -30,18 +30,17 @@ public class ViewMap extends View{
     private Paint paint;
     private Paint statusPaint;
     private Paint textPaint;
-    boolean isFloorPlanA = true;
 
     List<DeskBlock> deskBlocks;
     String responseResult = "";
 
     int searchCount = 0;
 
-    public ViewMap(Context context) {
+    public ViewMapB(Context context) {
         super(context);
     }
 
-    public ViewMap(Context context, AttributeSet attrs){
+    public ViewMapB(Context context, AttributeSet attrs){
         super(context, attrs);
     }
 
@@ -57,28 +56,6 @@ public class ViewMap extends View{
         paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
-
-        if (isFloorPlanA){
-            //Outside rectangle
-            rectangle = new Rect(canvas.getWidth()/10, canvas.getHeight()/10, canvas.getWidth()*9/10, canvas.getHeight()/2);
-
-            canvas.drawRect(rectangle, paint);
-
-            //Draw the left/right lines
-            canvas.drawLine(canvas.getWidth() / 11, canvas.getHeight() / 4, canvas.getWidth() / 9, canvas.getHeight() / 4, paint);
-            canvas.drawLine(canvas.getWidth() / 11, canvas.getHeight() * 7 / 20, canvas.getWidth() / 9, canvas.getHeight() * 7 / 20, paint);
-            canvas.drawLine(canvas.getWidth() * 10 / 11, canvas.getHeight() / 4, canvas.getWidth() * 8 / 9, canvas.getHeight() / 4, paint);
-            canvas.drawLine(canvas.getWidth() * 10 / 11, canvas.getHeight() * 7 / 20, canvas.getWidth() * 8 / 9, canvas.getHeight() * 7 / 20, paint);
-
-            //Text
-            canvas.drawText("To MC", canvas.getWidth() / 8, canvas.getHeight() * 6 / 20, paint);
-            canvas.drawText("To Ring Road", canvas.getWidth() * 75 / 100, canvas.getHeight() * 6 / 20, paint);
-            canvas.drawText("To DC Library", canvas.getWidth() * 9 / 20, canvas.getHeight() * 47 / 100, paint);
-
-            //Draw the bottom lines
-            canvas.drawLine(canvas.getWidth() * 3 / 10, canvas.getHeight() * 49 / 100, canvas.getWidth() * 3 / 10, canvas.getHeight() * 51 / 100, paint);
-            canvas.drawLine(canvas.getWidth() * 7 / 10, canvas.getHeight() * 49 / 100, canvas.getWidth() * 7 / 10, canvas.getHeight() * 51 / 100, paint);
-        }
 
         rectangleDeskBlocks = new ArrayList<Rect>();
 
@@ -131,8 +108,8 @@ public class ViewMap extends View{
         int touchY = (int)event.getY();
         Context context = getContext();
 
-        //Default Floor Plan A Desk Hub ID
-        int deskHubID = 3;
+        //Default Floor Plan B Desk Hub ID
+        int deskHubID = 4;
 
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -155,7 +132,7 @@ public class ViewMap extends View{
                         break;
                     }
                 }
-            break;
+                break;
             case MotionEvent.ACTION_UP:
                 System.out.println("Touching up!");
                 break;
@@ -167,10 +144,6 @@ public class ViewMap extends View{
     }
 
     public void updateMapStatus(int floorID){
-        if (floorID != 3){
-            isFloorPlanA = false;
-        }
-
         //Call RestAPI
         String urlString = "http://seatspotter.azurewebsites.net/seatspotter/webapi/floors/" +String.valueOf(floorID)+ "/deskhubs";
 

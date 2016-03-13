@@ -33,6 +33,14 @@
                 android:value=".ActivityLibraryFloor" />
         </activity>
         <activity
+            android:name=".ActivityLibraryMapB"
+            android:label="@string/title_activity_library_map"
+            android:parentActivityName=".ActivityLibraryFloor" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityLibraryFloor" />
+        </activity>
+        <activity
             android:name=".ActivityLibraryDesk"
             android:label="@string/title_activity_desk_view"
             android:parentActivityName=".ActivityLibraryMap" >

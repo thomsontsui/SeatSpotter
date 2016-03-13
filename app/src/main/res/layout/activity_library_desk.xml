@@ -27,8 +27,7 @@
         android:text="Poll"
         android:id="@+id/pollButton"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/deskLegend"
-        android:layout_toEndOf="@+id/deskLegend"
+        android:layout_alignParentRight="true"
         android:onClick="onPollButtonClick"/>
 
 </RelativeLayout>

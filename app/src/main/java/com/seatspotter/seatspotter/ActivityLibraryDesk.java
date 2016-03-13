@@ -2,6 +2,7 @@ package com.seatspotter.seatspotter;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -16,15 +17,29 @@ import java.util.TimerTask;
 
 public class ActivityLibraryDesk extends ActionBarActivity {
 
+    int deskHubID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Desk View");
         setContentView(R.layout.activity_library_desk);
 
+        Intent intent = getIntent();
+
+        if (intent.getStringExtra(ViewMap.DESK_HUB_ID) != null){
+            deskHubID = Integer.parseInt(intent.getStringExtra(ViewMap.DESK_HUB_ID));
+        } else {
+            deskHubID = Integer.parseInt(intent.getStringExtra(ViewMapB.DESK_HUB_ID));
+        }
+
+        System.out.println("DeskHubID: " + String.valueOf(deskHubID));
+
         //Legend image
         ImageView deskLegend = (ImageView)findViewById(R.id.deskLegend);
         deskLegend.setImageResource(R.drawable.desklegend2);
+
+        updateDeskStatus();
 
         //Timer
         Timer timer = new Timer();
@@ -32,8 +47,7 @@ public class ActivityLibraryDesk extends ActionBarActivity {
     }
 
     public void onPollButtonClick(View view){
-        ViewDesk deskBlockView = (ViewDesk) findViewById(R.id.canvasDesk);
-        deskBlockView.updateDeskStatus();
+        updateDeskStatus();
     }
 
     @Override
@@ -58,6 +72,11 @@ public class ActivityLibraryDesk extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void updateDeskStatus(){
+        ViewDesk deskBlockView = (ViewDesk) findViewById(R.id.canvasDesk);
+        deskBlockView.updateDeskStatus(deskHubID);
+    }
+
     private TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
@@ -66,8 +85,7 @@ public class ActivityLibraryDesk extends ActionBarActivity {
                 @Override
                 public void run() {
                     //Update desk status
-                    ViewDesk deskBlockView = (ViewDesk) findViewById(R.id.canvasDesk);
-                    deskBlockView.updateDeskStatus();
+                    updateDeskStatus();
                 }
             });
         }

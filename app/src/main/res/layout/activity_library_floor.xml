@@ -29,12 +29,12 @@
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true" />
 
-    <ListView
+    <ExpandableListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/libraryFloors"
+        android:id="@+id/floorList"
         android:layout_below="@+id/libraryName"
-        android:layout_centerHorizontal="true" />
+        android:groupIndicator="@null"/>
 
 
 </RelativeLayout>

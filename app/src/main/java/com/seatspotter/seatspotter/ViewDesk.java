@@ -5,23 +5,27 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewDesk extends View {
 
     private Rect rectangle;
     private Paint paint = new Paint();
-    private Paint statusPaint = new Paint();
-    //private boolean onFirstDraw = true;
-    private int[] xPosition;
-    private int[] yPosition;
-    private int[] status;
-    private String stringResult;
+    private Paint statusPaint;
+
+    String responseResult = "";
+    List<Desk> desks;
 
     public ViewDesk(Context context) {
         super(context);
@@ -37,140 +41,71 @@ public class ViewDesk extends View {
         //Create the Paint and its colour
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3);
 
-        //outside rectangle
-        rectangle = new Rect(canvas.getWidth() / 10, 10, canvas.getWidth() * 9 / 10, canvas.getHeight() / 2);
+        //Drawing desks
+        for (Desk d : desks){
+            //Initializing desk block
+            Rect desk = new Rect(canvas.getWidth()*d.x/100, canvas.getHeight()*d.y/100, canvas.getWidth()*d.x/100 + canvas.getWidth()*d.xLength/100, canvas.getHeight()*d.y/100 + canvas.getHeight()*d.yLength/100);
+            //Rect desk = new Rect(d.x, d.y, d.x + d.xLength, d.y + d.yLength);
 
-        canvas.drawRect(rectangle, paint);
+            // set the paint colour for the filling
+            statusPaint = new Paint();
 
-        canvas.drawLine(canvas.getWidth() / 2, 10, canvas.getWidth() / 2, canvas.getHeight() / 2, paint);
-        canvas.drawLine(canvas.getWidth() / 10, canvas.getHeight() / 4, canvas.getWidth() * 9 / 10, canvas.getHeight() / 4, paint);
-
-        //if (onFirstDraw) {
-        statusPaint.setColor(Color.GREEN);
-           // onFirstDraw = false;
-
-        //Need to circles one for outline, one for fill
-        canvas.drawCircle(canvas.getWidth() * 3 / 10, canvas.getHeight() / 8, 50, statusPaint);
-        canvas.drawCircle(canvas.getWidth() * 3 / 10, canvas.getHeight() / 8, 50, paint);
-
-        canvas.drawCircle(canvas.getWidth() * 7 / 10, canvas.getHeight() / 8, 50, statusPaint);
-        canvas.drawCircle(canvas.getWidth() * 7 / 10, canvas.getHeight() / 8, 50, paint);
-
-        canvas.drawCircle(canvas.getWidth() * 3 / 10, canvas.getHeight() * 3 / 8, 50, statusPaint);
-        canvas.drawCircle(canvas.getWidth() * 3 / 10, canvas.getHeight() * 3 / 8, 50, paint);
-
-        canvas.drawCircle(canvas.getWidth() * 7 / 10, canvas.getHeight() * 3 / 8, 50, statusPaint);
-        canvas.drawCircle(canvas.getWidth() * 7 / 10, canvas.getHeight() * 3 / 8, 50, paint);
-        //}
-
-        if (status != null) {
-            for (int i = 0; i < status.length; i++) {
-                switch (status[i]) {
-                    case 0:
-                        statusPaint.setColor(Color.RED);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, statusPaint);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, paint);
-                        break;
-                    case 1:
-                        statusPaint.setColor(Color.YELLOW);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, statusPaint);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, paint);
-                        break;
-                    case 2:
-                        statusPaint.setColor(Color.GREEN);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, statusPaint);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, paint);
-                        break;
-                    default:
-                        statusPaint.setColor(Color.RED);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, statusPaint);
-                        canvas.drawCircle(xPosition[i], yPosition[i], 50, paint);
-                }
+            if (d.deskState == 1){
+                statusPaint.setColor(Color.YELLOW);
+            } else if (d.deskState == 2){
+                statusPaint.setColor(Color.RED);
+            } else {
+                statusPaint.setColor(Color.GREEN);
             }
+            statusPaint.setStyle(Paint.Style.FILL);
+
+            canvas.drawRect(desk, statusPaint);
+            canvas.drawRect(desk, paint);
         }
     }
 
-    public void updateDeskStatus(){
+    public void updateDeskStatus(int deskHubID){
         //Call RestAPI
-        String urlString = "http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries";
-        //new CallAPI().execute(urlString);
+        String urlString = "http://seatspotter.azurewebsites.net/seatspotter/webapi/deskhubs/" +String.valueOf(deskHubID)+ "/desks";
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries", new AsyncHttpResponseHandler() {
+        client.get(urlString, new AsyncHttpResponseHandler() {
             // When the response returned by REST has Http response code '200'
             @Override
             public void onSuccess(String response) {
+                responseResult = response;
                 System.out.println("String: " + response);
             }
         });
 
-//        //Static Data before database is created
-//        Desk designFairDemoFloor1Desk1 = new Desk(0, 0, 227, 131);
-//        Desk designFairDemoFloor1Desk2 = new Desk(1, 0, 530, 131);
-//        Desk designFairDemoFloor1Desk3 = new Desk(0, 0, 227, 394);
-//        Desk designFairDemoFloor1Desk4 = new Desk(1, 0, 530, 394);
-//
-//        Desk[] desks = new Desk[] {designFairDemoFloor1Desk1, designFairDemoFloor1Desk2, designFairDemoFloor1Desk3, designFairDemoFloor1Desk4};
-//
-//        designFairDemoFloor1Desk1.setStatus(0);
-//        designFairDemoFloor1Desk2.setStatus(1);
-//        designFairDemoFloor1Desk3.setStatus(2);
-//        designFairDemoFloor1Desk4.setStatus(1);
-//
-//        xPosition = new int[desks.length];
-//        yPosition = new int[desks.length];
-//        status = new int[desks.length];
-//
-//        for (int i = 0; i < desks.length; i++) {
-//            xPosition[i] = desks[i].getX();
-//            yPosition[i] = desks[i].getY();
-//            status[i] = desks[i].getStatus();
-//        }
+        desks = new ArrayList<Desk>();
 
+        if (responseResult != ""){
+            try {
+                //Get the instance of JSONArray that contains JSONObjects
+                JSONArray jsonArray = new JSONArray(responseResult);
+
+                //Iterate the jsonArray and print the info of JSONObjects
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    int deskID = Integer.parseInt(jsonObject.optString("deskId").toString());
+                    int hubID = Integer.parseInt(jsonObject.optString("deskHubId").toString());
+                    int deskState = Integer.parseInt(jsonObject.optString("deskState").toString());
+                    int x = Integer.parseInt(jsonObject.optString("coordinateX").toString());
+                    int y = Integer.parseInt(jsonObject.optString("coordinateY").toString());
+                    int xLength = Integer.parseInt(jsonObject.optString("lengthX").toString());
+                    int yLength = Integer.parseInt(jsonObject.optString("lengthY").toString());
+
+                    Desk desk = new Desk(deskID, hubID, deskState, x, y, xLength, yLength);
+                    desks.add(desk);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         invalidate();
     }
-
-
-//    public class CallAPI extends AsyncTask<String, String, String> {
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String urlString = params[0];
-//            String resultToDisplay = "";
-//
-//            AsyncHttpClient client = new AsyncHttpClient();
-//            client.get("http://seatspotter.azurewebsites.net/seatspotter/webapi/libraries", new AsyncHttpResponseHandler() {
-//                // When the response returned by REST has Http response code '200'
-//                @Override
-//                public void onSuccess(String response) {
-//                    System.out.println("String: " + response);
-//                }
-//            });
-//
-////            InputStream in = null;
-////
-////            // HTTP Get
-////            try {
-////
-////                URL url = new URL(urlString);
-////
-////                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-////
-////                in = new BufferedInputStream(urlConnection.getInputStream());
-////                stringResult = in.toString();
-////
-////            } catch (Exception e ) {
-////
-////                System.out.println(e.getMessage());
-////
-////                return e.getMessage();
-////
-////            }
-//            return resultToDisplay;
-//        }
-////
-////        protected void onPostExecute(String result) {
-////
-////        }
-//    }
 }

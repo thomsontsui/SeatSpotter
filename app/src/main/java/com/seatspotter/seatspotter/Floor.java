@@ -2,13 +2,17 @@ package com.seatspotter.seatspotter;
 
 public class Floor {
 
-    String floorName;
-    int floorNumber;
-    Desk[] desks;
+    int id;
+    String floorLevel;
+    int totalDesks;
+    int emptyDesks;
+    int unknownState;
 
-    public Floor(String floorName, int floorNumber, Desk[] desks){
-        this.floorName = floorName;
-        this.floorNumber = floorNumber;
-        this.desks = desks;
+    public Floor(int id, String floorLevel, int totalDesks, int emptyDesks, int unknownState){
+        this.id = id;
+        this.floorLevel = floorLevel;
+        this.totalDesks = totalDesks;
+        this.emptyDesks = emptyDesks;
+        this.unknownState = unknownState;
     }
 }

@@ -3,32 +3,26 @@ package com.seatspotter.seatspotter;
 public class DeskBlock {
 
     int id;
-    int availDesks;
+    int emptyDesks;
     int x;
     int y;
-    int status;
+    int xLength;
+    int yLength;
+    int floorID;
+    int totalDesks;
+    int unknownState;
 
-    public DeskBlock (int id, int availDesks, int x, int y)
+    public DeskBlock (int id, int emptyDesks, int x, int y, int xLength, int yLength, int floorID, int totalDesks, int unknownState)
     {
         this.id = id;
-        this.availDesks = availDesks;
+        this.emptyDesks = emptyDesks;
         this.x = x;
         this.y = y;
-        this.status = 2;
+        this.xLength = xLength;
+        this.yLength = yLength;
+        this.floorID = floorID;
+        this.totalDesks = totalDesks;
+        this.unknownState = unknownState;
     }
-
-    public int getStatus(){
-        return this.status;
-    }
-
-    public void setStatus(int status){
-        this.status = status;
-    }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY() { return this. y; }
 }
 

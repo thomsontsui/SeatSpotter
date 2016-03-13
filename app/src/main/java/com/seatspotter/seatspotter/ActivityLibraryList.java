@@ -27,6 +27,7 @@ import java.util.TimerTask;
 public class ActivityLibraryList extends ActionBarActivity {
 
     public final static String LIBRARY_NAME = "com.seatspotter.seatspotter.LIBRARYNAME";
+    public final static String LIBRARY_ID = "com.seatspotter.seatspotter.LIBRARYID";
 
     List<String> groupList;
     List<String> childList;
@@ -34,6 +35,7 @@ public class ActivityLibraryList extends ActionBarActivity {
     ExpandableListView expLibraryList;
     String responseResult = "";
     ProgressDialog pd;
+    List <Library> libs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,7 @@ public class ActivityLibraryList extends ActionBarActivity {
             }
         });
 
-        List <Library> libraries = new ArrayList<Library>();
+        libs = new ArrayList<Library>();
 
         if (responseResult != ""){
             try {
@@ -151,21 +153,15 @@ public class ActivityLibraryList extends ActionBarActivity {
                     int emptyDesks = Integer.parseInt(jsonObject.optString("emptyDesks").toString());
                     int unknownState = Integer.parseInt(jsonObject.optString("unknownState").toString());
 
-//                    System.out.println("id: " + String.valueOf(id));
-//                    System.out.println("name: " + name);
-//                    System.out.println("totalDesks: " + String.valueOf(totalDesks));
-//                    System.out.println("emptyDesks: " + String.valueOf(emptyDesks));
-//                    System.out.println("unknownState: " + String.valueOf(unknownState));
-
                     Library lib = new Library(id, name, totalDesks, emptyDesks, unknownState);
-                    libraries.add(lib);
+                    libs.add(lib);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        createGroupList(libraries);
-        createCollection(libraries);
+        createGroupList(libs);
+        createCollection(libs);
 
 
         expLibraryList = (ExpandableListView) findViewById(R.id.libraryList);
@@ -186,11 +182,21 @@ public class ActivityLibraryList extends ActionBarActivity {
         expLibraryList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                int libraryID = 0;
+                for (Library lib : libs){
+                    if (lib.name.contains(groupList.get(groupPosition).toString())){
+                        libraryID = lib.id;
+                    }
+                }
+
                 if (groupList.get(groupPosition).toString().contains("Demo Library")) {
                     Intent intent = new Intent(ActivityLibraryList.this, ActivityLibraryFloor.class);
 
                     String libraryName = ((TextView) v.findViewById(R.id.heading)).getText().toString();
                     intent.putExtra(LIBRARY_NAME, libraryName);
+                    intent.putExtra(LIBRARY_ID, String.valueOf(libraryID));
+
+                    timerTask.cancel();
 
                     startActivity(intent);
                 } else {
