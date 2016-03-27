@@ -89,7 +89,7 @@ public class ViewMapB extends View{
         if (searchCount > 0){
             //Drawing blue rectangle outlining desk block
             for (DeskBlock db : deskBlocks){
-                if (db.emptyDesks == searchCount){
+                if (db.emptyDesks >= searchCount){
                     Rect outline = new Rect(canvas.getWidth()*db.x/100-5, canvas.getHeight()*db.y/100-5, canvas.getWidth()*db.x/100 + canvas.getWidth()*db.xLength/100+5, canvas.getHeight()*db.y/100 + canvas.getHeight()*db.yLength/100+5);
 
                     // set the paint colour for the outline

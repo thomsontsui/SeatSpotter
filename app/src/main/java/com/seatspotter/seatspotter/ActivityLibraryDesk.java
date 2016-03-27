@@ -43,7 +43,7 @@ public class ActivityLibraryDesk extends ActionBarActivity {
 
         //Timer
         Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 5000);
+        timer.schedule(timerTask, 0, 10000);
     }
 
     public void onPollButtonClick(View view){

@@ -46,8 +46,23 @@ public class ViewDesk extends View {
         //Drawing desks
         for (Desk d : desks){
             //Initializing desk block
-            Rect desk = new Rect(canvas.getWidth()*d.x/100, canvas.getHeight()*d.y/100, canvas.getWidth()*d.x/100 + canvas.getWidth()*d.xLength/100, canvas.getHeight()*d.y/100 + canvas.getHeight()*d.yLength/100);
+            //Rect desk = new Rect(canvas.getWidth()*d.x/100, canvas.getHeight()*d.y/100, canvas.getWidth()*d.x/100 + canvas.getWidth()*d.xLength/100, canvas.getHeight()*d.y/100 + canvas.getHeight()*d.yLength/100);
             //Rect desk = new Rect(d.x, d.y, d.x + d.xLength, d.y + d.yLength);
+
+            int length;
+            Rect desk;
+
+            if (d.xLength > d.yLength){
+                length = d.yLength;
+                desk = new Rect(canvas.getWidth()*d.x/100+canvas.getWidth()/2-d.xLength/2, canvas.getHeight()*d.y/100, canvas.getWidth()*d.x/100 + canvas.getWidth()*length/100+canvas.getWidth()/2, canvas.getHeight()*d.y/100 + canvas.getHeight()*length/100);
+
+            } else {
+                length = d.xLength;
+                //desk = new Rect(canvas.getWidth()*d.x/100, canvas.getHeight()*d.y/100+canvas.getHeight()/2-d.yLength/2, canvas.getWidth()*d.x/100 + canvas.getWidth()*length/100, canvas.getHeight()*d.y/100 + canvas.getHeight()*length/100+canvas.getHeight()/2);
+                desk = new Rect(canvas.getWidth()*d.x/100, canvas.getHeight()*d.y/100, canvas.getWidth()*d.x/100 + canvas.getWidth()*d.xLength/100, canvas.getHeight()*d.y/100 + canvas.getHeight()*d.yLength/100);
+            }
+
+
 
             // set the paint colour for the filling
             statusPaint = new Paint();
